@@ -1,0 +1,31 @@
+name: Release Notes From Commits
+description: Generate release notes from the latest commit for NuGet packages and GitHub releases.
+author: soenneker
+branding:
+  icon: file-text
+  color: blue
+inputs:
+  ref:
+    description: Local commit, branch, or tag to read. Defaults to the checked-out commit, including a merge commit on pull requests.
+    default: HEAD
+  repository:
+    description: Repository path, relative to GITHUB_WORKSPACE or absolute.
+    default: .
+  strip-coauthors:
+    description: Remove lines starting exactly with Co-authored-by:, matching the existing publishing workflows.
+    default: 'true'
+  export-env:
+    description: Export PACKAGE_RELEASE_NOTES for subsequent steps in this job.
+    default: 'true'
+outputs:
+  notes:
+    description: Full commit message with optional coauthor-line removal; multiline formatting is preserved.
+  package-release-notes:
+    description: Same text as notes, for package metadata. Markdown is preserved for compatibility.
+  notes-file:
+    description: Absolute path to a UTF-8 temporary file usable with gh release create --notes-file.
+  commit-sha:
+    description: Full resolved commit SHA used for the notes.
+runs:
+  using: node24
+  main: src/index.js
